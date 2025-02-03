@@ -63,6 +63,9 @@ class AMBOTOP(Client):
     async def stop(self):
         await super().stop()
 
+# Create the AMBOTOP instance (this is your app)
+app = AMBOTOP()
+
 # Clone Bot Feature
 @app.on_message(filters.command("clone") & filters.private)
 async def clone_bot(client, message):
@@ -77,8 +80,8 @@ async def clone_bot(client, message):
 
     try:
         new_bot = Client(f"bot_{len(cloned_bots) + 1}", api_id=config.API_ID, api_hash=config.API_HASH, bot_token=new_bot_token)
-        new_bot.start()
-        new_bot.stop()
+        await new_bot.start()
+        await new_bot.stop()
         cloned_bots[new_bot_token] = message.from_user.id
         save_cloned_bots(cloned_bots)
         await message.reply("✅ Bot cloned successfully!")
@@ -117,3 +120,6 @@ async def cloned_count(client, message):
         return await message.reply("❌ You are not authorized to use this command.")
     cloned_bots = load_cloned_bots()
     await message.reply(f"✅ Total cloned bots: `{len(cloned_bots)}`")
+
+if __name__ == "__main__":
+    app.run()  # Run the bot
